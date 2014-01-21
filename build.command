@@ -1,25 +1,39 @@
 #!/bin/sh
-echo -en "\033[1;31mStarting Palette.js Build...\n\033[0m"
-cd /Users/Venerons/github/local/palette.js/
 #
-# HEADER
+# ENVIRONMENT
 #
-echo "// Palette.js v0.9.0 | Copyright (c) 2013-2014 Daniele Veneroni | Licensed under the MIT License (X11 License)" > headerjs
+PROJECTNAME="Palette.js"
+PROJECTVERSION="0.9.0"
+COPYRIGHT="Copyright (c) 2013-2014 Daniele Veneroni"
+LICENSE="Licensed under the MIT License (X11 License)"
+PROJECTDIR="/Users/Venerons/github/local/palette.js/"
+YUI="/Users/Venerons/Documents/Developer/yuicompressor-2.4.8.jar"
+buildjs() {
+	singlejs palette.js palette.min.js
+}
 #
-# JAVASCRIPT COMPRESSION
+# BUILD PROCEDURE
 #
-echo -en "\033[1;31mStarting JS compression...\n\033[0m"
-if [ -e palette.min.js ]; then
-	rm palette.min.js;
-fi
-java -jar /Users/Venerons/Documents/Developer/yuicompressor-2.4.8.jar palette.js -o palette.min.js --type js --charset utf-8 --preserve-semi
-echo "" >> palette.min.js
-mv palette.min.js tmp
-cat headerjs tmp > palette.min.js
-rm tmp
-echo -en "\033[1;32mJS compression finished.\n\033[0m"
-#
-# CLEANUP
-#
+clear
+BLUE="\033[1;34m"
+GREEN="\033[32m"
+MAGENTA="\033[35m"
+NORMAL="\033[0m"
+echo "$BLUE \bStarting $PROJECTNAME Build...$NORMAL"
+echo "// $PROJECTNAME v$PROJECTVERSION | $COPYRIGHT | $LICENSE" > $PROJECTDIR"headerjs"
+cd $PROJECTDIR
+singlejs() {
+	if [ -e $2 ]; then
+		rm $2;
+	fi
+	java -jar $YUI $1 -o $2 --type js --charset utf-8 --preserve-semi
+	echo "" >> $2
+	mv $2 tmp
+	cat headerjs tmp > $2
+	rm tmp
+}
+echo "$MAGENTA \bStarting JS compression...$NORMAL"
+buildjs
+echo "$GREEN \bJS compression finished.$NORMAL"
 rm headerjs
-echo -en "\033[1;32mPalette.js Build finished.\n\033[0m"
+echo "$BLUE \b$PROJECTNAME build finished.$NORMAL"
