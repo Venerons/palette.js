@@ -20,8 +20,8 @@ GREEN="\033[32m"
 MAGENTA="\033[35m"
 NORMAL="\033[0m"
 echo "$BLUE \bStarting $PROJECTNAME Build...$NORMAL"
-echo "// $PROJECTNAME v$PROJECTVERSION | $COPYRIGHT | $LICENSE" > $PROJECTDIR"headerjs"
 cd $PROJECTDIR
+echo "// $PROJECTNAME v$PROJECTVERSION | $COPYRIGHT | $LICENSE" > headerjs
 singlejs() {
 	if [ -e $2 ]; then
 		rm $2;
