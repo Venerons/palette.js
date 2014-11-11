@@ -1,184 +1,304 @@
 // ┌───────────────────────────────────────────────────────────────────────┐
 // │ Palette.js                                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Version 0.9.0 - 13/01/2014                                            │
+// │ Version 1.0.0 - 11/11/2014                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
 // │ Copyright (c) 2013-2014 Daniele Veneroni (http://venerons.github.io)  │
 // ├───────────────────────────────────────────────────────────────────────┤
 // │ Licensed under the MIT License (X11 License).                         │
 // └───────────────────────────────────────────────────────────────────────┘
 
-"use strict";
+/*
 
-function Palette(canvas) {
-	this.canvas = document.getElementById(canvas);
-	this.context = this.canvas.getContext("2d");
+// POLYGONS
+
+http://www.arungudelli.com/html5/html5-canvas-polygon/
+
+function regularpolygon(ctx, x, y, radius, sides) {
+  if (sides < 3) return;
+  ctx.beginPath();
+  var a = ((Math.PI * 2)/sides);
+  ctx.translate(x,y);
+  ctx.moveTo(radius,0);
+  for (var i = 1; i < sides; i++) {
+    ctx.lineTo(radius*Math.cos(a*i),radius*Math.sin(a*i));
+  }
+  ctx.closePath();
+  ctx.stroke();
 }
 
-// change canvas size (warning: this will clear the canvas!)
-Palette.prototype.size = function (w, h) {
-	this.canvas.width = w;
-	this.canvas.height = h;
-	return this;
-};
+// GRADIENTS
 
-// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
-// Supported type: "image/png", "image/jpeg", "image/webp"
-// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
-Palette.prototype.exportDataURL = function (type, quality) {
-	type = type || "image/png";
-	quality = quality || 1.0;
-	if (this.canvas.toDataURLHD) {
-		return this.canvas.toDataURLHD(type, quality);
-	} else {
-		return this.canvas.toDataURL(type, quality);
-	}
-};
+'90-#fff-#000'
 
-// export the canvas as a blob image. You must pass a callback function, because this method is a void.
-// Supported type: "image/png", "image/jpeg", "image/webp"
-// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
-Palette.prototype.exportBlob = function (callback, type, quality) {
-	type = type || "image/png";
-	quality = quality || 1.0;
-	if (this.canvas.toBlobHD) {
-		this.canvas.toBlobHD(callback, type, quality);
-	} else {
-		this.canvas.toBlob(callback, type, quality);
-	}
-	return this;
-};
+create and set a linear gradient
+Example:
+paper.gradient({
+	x1: 0,
+	y1: 0,
+	x2: 100,
+	y2: 0,
+	color1: 'blue',
+	color2: 'red'
+});
 
-// set the color for future use
-Palette.prototype.setColor = function (color) {
-	this.context.fillStyle = color || "#000000";
-	this.context.strokeStyle = color || "#000000";
-	return this;
-};
-
-// create and set a linear gradient
-Palette.prototype.gradient = function (x1, y1, x2, y2, color1, color2) {
-	var gradient = this.context.createLinearGradient(x1, y1, x2, y2);
-	gradient.addColorStop(0, color1);
-	gradient.addColorStop(1, color2);
+Palette.prototype.gradient = function (settings) {
+	var gradient = this.context.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
+	gradient.addColorStop(0, settings.color1);
+	gradient.addColorStop(1, settings.color2);
 	this.setColor(gradient);
 	return this;
 };
 
-// paint a filled rectangle (color is optional)
-Palette.prototype.rect = function (x, y, w, h, color) {
-	if (color) { this.setColor(color); }
-	this.context.fillRect(x, y, w, h);
-	return this;
-};
+---
 
-// paint a stroked rectangle (color is optional)
-Palette.prototype.strokedRect = function (x, y, w, h, color) {
-	if (color) { this.setColor(color); }
-	this.context.strokeRect(x, y, w, h);
-	return this;
-};
+.rotate(degrees)
 
-// clear a rectangular area
-Palette.prototype.clear = function (x, y, w, h) {
-	this.context.clearRect(x, y, w, h);
-	return this;
-};
+```js
+context.rotate(degrees * Math.PI / 180);
+```
 
-// paint a line (color is optional)
-Palette.prototype.line = function (x1, y1, x2, y2, join, w, color) {
-	if (color) { this.setColor(color); }
-	this.context.lineJoin = join || "miter"; // miter, round, bevel
-	this.context.lineWidth = w || 1;
-	this.context.beginPath();
-	this.context.moveTo(x1, y1);
-	this.context.lineTo(x2, y2);
-	this.context.closePath();
-	this.context.stroke();
-	return this;
-};
+.scale()  
+.translate()  
+.transform() - see transform() and setTransform() 
 
-// paint a filled circle (color is optional)
-Palette.prototype.circle = function (x, y, r, color) {
-	if (color) { this.setColor(color); }
-	this.context.beginPath();
-	this.context.arc(x, y, r, 0, 2*Math.PI);
-	this.context.closePath();
-	this.context.fill();
-	return this;
-};
+---
 
-// paint a stroked circle (color is optional)
-Palette.prototype.strokedCircle = function (x, y, r, color) {
-	if (color) { this.setColor(color); }
-	this.context.beginPath();
-	this.context.arc(x, y, r, 0, 2*Math.PI);
-	this.context.closePath();
-	this.context.stroke();
-	return this;
-};
+#### compositing
 
-// paint a filled arc (color is optional)
-Palette.prototype.arc = function (x, y, r, start, stop, color) {
-	if (color) { this.setColor(color); }
-	this.context.beginPath();
-	this.context.arc(x, y, r, start, stop);
-	this.context.closePath();
-	this.context.fill();
-	return this;
-};
+globalAlpha  
+globalCompositeOperation
 
-// paint a stroked arc (color is optional)
-Palette.prototype.strokedArc = function (x, y, r, start, stop, color) {
-	if (color) { this.setColor(color); }
-	this.context.beginPath();
-	this.context.arc(x, y, r, start, stop);
-	this.context.closePath();
-	this.context.stroke();
-	return this;
-};
+*/
 
-// paint a filled text (color is optional)
-Palette.prototype.text = function (text, x, y, font, color) {
-	if (color) { this.setColor(color); }
-	this.context.font = font;
-	this.context.fillText(text, x, y);
-	return this;
-};
+(function () {
+	'use strict';
 
-// paint a stroked text (color is optional)
-Palette.prototype.strokedText = function (text, x, y, font, color) {
-	if (color) { this.setColor(color); }
-	this.context.font = font;
-	this.context.strokeText(text, x, y);
-	return this;
-};
+	// Example: var paper = new Palette('myCanvas');
+	function Palette(canvasID) {
+		this.canvas = document.getElementById(canvasID);
+		this.context = this.canvas.getContext('2d');
+	}
 
-// paint an image (width and height are optionals)
-Palette.prototype.image = function (src, x, y, w, h) {
-	var ctx = this.context;
-	var image = new Image();
-	image.onload = function() {
-		if (w && h) {
-			ctx.drawImage(image, x, y, w, h);
+	// change canvas size (warning: this will clear the canvas!)
+	Palette.prototype.size = function (w, h) {
+		this.canvas.width = w;
+		this.canvas.height = h;
+		return this;
+	};
+
+	// clear a rectangular area
+	Palette.prototype.clear = function (settings) {
+		if (settings) {
+			this.context.clearRect(settings.x, settings.y, settings.width, settings.height);
 		} else {
-			ctx.drawImage(image, x, y);
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		}
+		return this;
+	};
+
+	// set the style for future use
+	Palette.prototype.style = function (settings) {
+		if (settings.fill) {
+			this.context.fillStyle = settings.fill;
+		}
+		if (settings.shadow) {
+			var shadow = shadow.split(' ');
+			this.context.shadowOffsetX = parseInt(shadow[0], 10);
+			this.context.shadowOffsetY = parseInt(shadow[1], 10);
+			this.context.shadowBlur = parseInt(shadow[2], 10);
+			this.context.shadowColor = shadow[3];
+		}
+		if (settings.stroke) {
+			this.context.strokeStyle = settings.stroke;
+		}
+		if (settings.cap) {
+			this.context.lineCap = settings.cap;
+		}
+		if (settings.join) {
+			this.context.lineJoin = settings.join;
+		}
+		if (settings.thickness) {
+			this.context.lineWidth = settings.thickness;
+		}
+		if (settings.miterLimit) {
+			this.context.miterLimit = settings.miterLimit;
+		}
+		return this;
+	};
+
+	// paint a line
+	Palette.prototype.line = function (settings) {
+		this.context.save();
+		this.style(settings);
+		this.context.beginPath();
+		this.context.moveTo(settings.x1, settings.y1);
+		this.context.lineTo(settings.x2, settings.y2);
+		this.context.closePath();
+		this.context.stroke();
+		this.context.restore();
+		return this;
+	};
+
+	// paint a rectangle
+	Palette.prototype.rect = function (settings) {
+		this.context.save();
+		this.style(settings);
+		this.context.beginPath();
+		this.context.rect(settings.x, settings.y, settings.width, settings.height);
+		this.context.closePath();
+		if (settings.fill) {
+			this.context.fill();
+		}
+		if (settings.stroke) {
+			this.context.stroke();
+		}
+		this.context.restore();
+		return this;
+	};
+
+	// paint a circle
+	Palette.prototype.circle = function (settings) {
+		this.context.save();
+		this.style(settings);
+		this.context.beginPath();
+		this.context.arc(settings.x, settings.y, settings.r, 0, 2 * Math.PI);
+		this.context.closePath();
+		if (settings.fill) {
+			this.context.fill();
+		}
+		if (settings.stroke) {
+			this.context.stroke();
+		}
+		this.context.restore();
+		return this;
+	};
+
+	// paint an arc
+	Palette.prototype.arc = function (settings) {
+		this.context.save();
+		this.style(settings);
+		this.context.beginPath();
+		this.context.arc(settings.x, settings.y, settings.r, settings.start, settings.stop);
+		this.context.closePath();
+		if (settings.fill) {
+			this.context.fill();
+		}
+		if (settings.stroke) {
+			this.context.stroke();
+		}
+		this.context.restore();
+		return this;
+	};
+
+	/*
+
+	Palette.prototype.path = function (settings) {
+		this.context.save();
+		this.style(settings);
+		this.context.beginPath();
+
+		// path engine
+
+		this.context.closePath();
+		if (settings.fill) {
+			this.context.fill();
+		}
+		if (settings.stroke) {
+			this.context.stroke();
+		}
+		this.context.restore();
+		return this;
+	};
+
+	*/
+
+	// paint a text
+	Palette.prototype.text = function (settings) {
+		this.context.save();
+		this.style(settings);
+		if (settings.font){
+			this.context.font = settings.font;
+		}
+		if (settings.align){
+			this.context.textAlign = settings.align;
+		}
+		if (settings.baseline){
+			this.context.textBaseline = settings.baseline;
+		}
+		if (settings.measure) {
+			this.context.measureText = settings.measure;
+		}
+		if (settings.stroke) {
+			this.context.strokeText(settings.text, settings.x, settings.y);
+		} else {
+			this.context.fillText(settings.text, settings.x, settings.y);
+		}
+		this.context.restore();
+		return this;
+	};
+
+	// paint an image (width and height are optionals)
+	Palette.prototype.image = function (settings) {
+		var ctx = this.context,
+			image = new Image();
+		image.onload = function() {
+			if (settings.width && settings.height) {
+				ctx.drawImage(image, settings.x, settings.y, settings.width, settings.height);
+			} else {
+				ctx.drawImage(image, settings.x, settings.y);
+			}
+		};
+		image.src = settings.src;
+		return this;
+	};
+
+	// requestAnimationFrame polyfill
+	window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+	// start an animation loop
+	Palette.prototype.animation = function (animation, fps) {
+		var palette = this;
+		if (!fps) {
+			animation();
+			requestAnimationFrame(palette.animation(animation));
+		} else {
+			setTimeout(function() {
+				animation();
+				requestAnimationFrame(palette.animation(animation, fps));
+			}, 1000 / fps);
+		}
+		//return this;
+	};
+
+	// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
+	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
+	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
+	Palette.prototype.toDataURL = function (settings) {
+		settings = settings || {};
+		var type = settings.type || 'image/png',
+			quality = settings.quality || 1.0;
+		if (this.canvas.toDataURLHD) {
+			return this.canvas.toDataURLHD(type, quality); // Legacy
+		} else {
+			return this.canvas.toDataURL(type, quality);
 		}
 	};
-	image.src = src;
-	return this;
-};
 
-// requestAnimationFrame polyfill
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+	// export the canvas as a blob image. You must pass a callback function, because this method is a void.
+	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
+	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
+	Palette.prototype.toBlob = function (settings, callback) {
+		settings = settings || {};
+		var type = settings.type || 'image/png',
+			quality = settings.quality || 1.0;
+		if (this.canvas.toBlobHD) {
+			this.canvas.toBlobHD(callback, type, quality); // Legacy
+		} else {
+			this.canvas.toBlob(callback, type, quality);
+		}
+		return this;
+	};
 
-// set an animation at a specified fps. fps is optional, if not specified default is 60fps
-Palette.prototype.animation = function (animation, fps) {
-	var palette = this;
-	if (!fps) { fps = 60; }
-	setTimeout(function() {
-		animation();
-		window.requestAnimationFrame(palette.animation(animation, fps));
-	}, 1000 / fps);
-	//return this;
-};
+	window.Palette = Palette;
+})();

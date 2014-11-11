@@ -22,20 +22,19 @@ Then add a canvas tag on your HTML with a id.
 Finally, use the Palette.js APIs to manipulate your canvas! Remember that you can also chain the APIs!
 
 ```js
-var paper = new Palette("myCanvas");
+var paper = new Palette('myCanvas');
 
 // draw a text
-paper.text("Hello World", 10, 30, "20px Arial", "blue");
+paper.text({ text: 'Hello World!', x: 10, y: 30, font: '20px Arial', fill: 'blue' });
 
-// change the color and paint a circle
-paper.setColor("#ABCDEF").circle(50, 50, 10);
+// draw a circle
+paper.circle({ x: 50, y: 30, r: 10, fill: 'red' });
 
 // draw a image
-paper.image("path/to/image.png", 10, 100);
+paper.image({ src: 'path/to/image.png', x: 10, y: 100 });
 
 // create an image from the canvas
-var image = new Image();
-image.src = paper.exportDataURL();
+var dataURL = paper.toDataURL();
 ```
 
 ## Licensing

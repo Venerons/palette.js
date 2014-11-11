@@ -3,7 +3,7 @@
 # ENVIRONMENT
 #
 PROJECTNAME="Palette.js"
-PROJECTVERSION="0.9.0"
+PROJECTVERSION="1.0.0"
 COPYRIGHT="Copyright (c) 2013-2014 Daniele Veneroni"
 LICENSE="Licensed under the MIT License (X11 License)"
 PROJECTDIR="/Users/Venerons/github/local/palette.js/"

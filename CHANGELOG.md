@@ -3,6 +3,10 @@
 _Copyright (c) 2013-2014 Daniele Veneroni._  
 _Released under MIT License. See [LICENSE.md](LICENSE.md) for further information._
 
+### Update 11/11/2014 (Version 1.0.0)
+
+* New final APIs
+
 ### Update 20/01/2014
 
 * Add build.command shell script to build the project
