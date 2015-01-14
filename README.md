@@ -1,6 +1,6 @@
 # Palette.js
 
-_Copyright (c) 2013-2014 Daniele Veneroni._  
+_Copyright (c) 2013-2015 Daniele Veneroni._  
 _Released under MIT License (X11 License). See [LICENSE.md](LICENSE.md) for further information._
 
 Palette.js is a new full-standard HTML5 Canvas framework. With Palette.js you can easily create canvas graphics and animation in seconds!

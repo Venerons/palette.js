@@ -1,9 +1,9 @@
 // ┌───────────────────────────────────────────────────────────────────────┐
 // │ Palette.js                                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Version 1.0.0 - 11/11/2014                                            │
+// │ Version 1.0.1 - 14/01/2015                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Copyright (c) 2013-2014 Daniele Veneroni (http://venerons.github.io)  │
+// │ Copyright (c) 2013-2015 Daniele Veneroni (http://venerons.github.io)  │
 // ├───────────────────────────────────────────────────────────────────────┤
 // │ Licensed under the MIT License (X11 License).                         │
 // └───────────────────────────────────────────────────────────────────────┘
@@ -103,7 +103,7 @@ globalCompositeOperation
 			this.context.fillStyle = settings.fill;
 		}
 		if (settings.shadow) {
-			var shadow = shadow.split(' ');
+			var shadow = settings.shadow.split(' ');
 			this.context.shadowOffsetX = parseInt(shadow[0], 10);
 			this.context.shadowOffsetY = parseInt(shadow[1], 10);
 			this.context.shadowBlur = parseInt(shadow[2], 10);
