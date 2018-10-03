@@ -1,9 +1,9 @@
 // ┌───────────────────────────────────────────────────────────────────────┐
 // │ Palette.js                                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Version 1.0.1 - 14/01/2015                                            │
+// │ Version 1.0.2 - 03/10/2018                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Copyright (c) 2013-2015 Daniele Veneroni (http://venerons.github.io)  │
+// │ Copyright (c) 2013-2018 Daniele Veneroni (http://venerons.github.io)  │
 // ├───────────────────────────────────────────────────────────────────────┤
 // │ Licensed under the MIT License (X11 License).                         │
 // └───────────────────────────────────────────────────────────────────────┘
@@ -76,7 +76,11 @@ globalCompositeOperation
 
 	// Example: var paper = new Palette('myCanvas');
 	function Palette(canvasID) {
-		this.canvas = document.getElementById(canvasID);
+		if (canvasID instanceof HTMLCanvasElement) {
+			this.canvas = canvasID;
+		} else {
+			this.canvas = document.getElementById(canvasID);
+		}
 		this.context = this.canvas.getContext('2d');
 	}
 
