@@ -2,10 +2,16 @@
 
 ## Quick Start
 
-To start using Palette.js you just need to create a Palette instance passing as argument the ID of your canvas
+To start using Palette.js you just need to create a Palette instance passing as argument a CSS selector of your canvas, or a canvas element. An optional second argument can be used to disable the alpha channel of the canvas, useful to improve performance if you don't need it.
 
 ```js
-var paper = new Palette('myCanvas');
+var paper = new Palette('#mycanvas');
+```
+```js
+var paper = new Palette(document.createElement('canvas'));
+```
+```js
+var paper = new Palette('#mycanvas', { alpha: false });
 ```
 
 ## Reference
@@ -48,7 +54,9 @@ paper.style({
 	cap: 'round',
 	join: 'round', // 'miter', 'round' or 'bevel' - default: 'miter'
 	thickness: 5, // default: 1
-	miterLimit: 10 // default: 5
+	miterLimit: 10, // default: 5
+	alpha: 0.5, // default: 1
+	composite: 'xor'
 });
 ```
 
@@ -83,9 +91,6 @@ var data = paper.toDataURL();
 var data = paper.toDataURL({ type: 'image/png' });
 var data = paper.toDataURL({ type: 'image/jpeg', quality: 0.5 });
 
-paper.toBlob(null, function (blob) {
-	console.log('Done.');
-});
 paper.toBlob({ type: 'image/png' }, function (blob) {
 	console.log('Done.');
 });
