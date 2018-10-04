@@ -1,7 +1,7 @@
 // ┌───────────────────────────────────────────────────────────────────────┐
 // │ Palette.js                                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
-// │ Version 1.0.2 - 03/10/2018                                            │
+// │ Version 2.0.0 - 04/10/2018                                            │
 // ├───────────────────────────────────────────────────────────────────────┤
 // │ Copyright (c) 2013-2018 Daniele Veneroni (http://venerons.github.io)  │
 // ├───────────────────────────────────────────────────────────────────────┤
@@ -10,24 +10,44 @@
 
 /*
 
-// POLYGONS
+// PATH
+
+Palette.prototype.path = function (settings) {
+	this.context.save();
+	this.style(settings);
+	this.context.beginPath();
+
+	// path engine
+
+	this.context.closePath();
+	if (settings.fill) {
+		this.context.fill();
+	}
+	if (settings.stroke) {
+		this.context.stroke();
+	}
+	this.context.restore();
+	return this;
+};
+
+// POLYGON
 
 http://www.arungudelli.com/html5/html5-canvas-polygon/
 
 function regularpolygon(ctx, x, y, radius, sides) {
-  if (sides < 3) return;
-  ctx.beginPath();
-  var a = ((Math.PI * 2)/sides);
-  ctx.translate(x,y);
-  ctx.moveTo(radius,0);
-  for (var i = 1; i < sides; i++) {
-    ctx.lineTo(radius*Math.cos(a*i),radius*Math.sin(a*i));
-  }
-  ctx.closePath();
-  ctx.stroke();
+	if (sides < 3) return;
+	ctx.beginPath();
+	var a = ((Math.PI * 2)/sides);
+	ctx.translate(x,y);
+	ctx.moveTo(radius,0);
+	for (var i = 1; i < sides; i++) {
+		ctx.lineTo(radius*Math.cos(a*i),radius*Math.sin(a*i));
+	}
+	ctx.closePath();
+	ctx.stroke();
 }
 
-// GRADIENTS
+// GRADIENT
 
 '90-#fff-#000'
 
@@ -52,36 +72,26 @@ Palette.prototype.gradient = function (settings) {
 
 ---
 
-.rotate(degrees)
-
-```js
-context.rotate(degrees * Math.PI / 180);
-```
-
+.rotate(degrees) --> context.rotate(degrees * Math.PI / 180);
 .scale()  
 .translate()  
 .transform() - see transform() and setTransform() 
-
----
-
-#### compositing
-
-globalAlpha  
-globalCompositeOperation
 
 */
 
 (function () {
 	'use strict';
 
-	// Example: var paper = new Palette('myCanvas');
-	function Palette(canvasID) {
-		if (canvasID instanceof HTMLCanvasElement) {
-			this.canvas = canvasID;
+	// Example: var paper = new Palette(document.createElement('canvas'));
+	// Example: var paper = new Palette('#myCanvas');
+	// Example: var paper = new Palette('#myCanvas', { alpha: false });
+	function Palette(canvas, settings) {
+		if (canvas instanceof HTMLCanvasElement) {
+			this.canvas = canvas;
 		} else {
-			this.canvas = document.getElementById(canvasID);
+			this.canvas = document.querySelector(canvas);
 		}
-		this.context = this.canvas.getContext('2d');
+		this.context = this.canvas.getContext('2d', settings);
 	}
 
 	// change canvas size (warning: this will clear the canvas!)
@@ -127,6 +137,12 @@ globalCompositeOperation
 		}
 		if (settings.miterLimit) {
 			this.context.miterLimit = settings.miterLimit;
+		}
+		if (settings.alpha) {
+			this.context.globalAlpha = settings.alpha;
+		}
+		if (settings.composite) {
+			this.context.globalCompositeOperation = settings.composite;
 		}
 		return this;
 	};
@@ -195,28 +211,6 @@ globalCompositeOperation
 		return this;
 	};
 
-	/*
-
-	Palette.prototype.path = function (settings) {
-		this.context.save();
-		this.style(settings);
-		this.context.beginPath();
-
-		// path engine
-
-		this.context.closePath();
-		if (settings.fill) {
-			this.context.fill();
-		}
-		if (settings.stroke) {
-			this.context.stroke();
-		}
-		this.context.restore();
-		return this;
-	};
-
-	*/
-
 	// paint a text
 	Palette.prototype.text = function (settings) {
 		this.context.save();
@@ -272,7 +266,6 @@ globalCompositeOperation
 				requestAnimationFrame(palette.animation(animation, fps));
 			}, 1000 / fps);
 		}
-		//return this;
 	};
 
 	// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
@@ -282,11 +275,7 @@ globalCompositeOperation
 		settings = settings || {};
 		var type = settings.type || 'image/png',
 			quality = settings.quality || 1.0;
-		if (this.canvas.toDataURLHD) {
-			return this.canvas.toDataURLHD(type, quality); // Legacy
-		} else {
-			return this.canvas.toDataURL(type, quality);
-		}
+		return this.canvas.toDataURL(type, quality);
 	};
 
 	// export the canvas as a blob image. You must pass a callback function, because this method is a void.
@@ -296,12 +285,7 @@ globalCompositeOperation
 		settings = settings || {};
 		var type = settings.type || 'image/png',
 			quality = settings.quality || 1.0;
-		if (this.canvas.toBlobHD) {
-			this.canvas.toBlobHD(callback, type, quality); // Legacy
-		} else {
-			this.canvas.toBlob(callback, type, quality);
-		}
-		return this;
+		return this.canvas.toBlob(callback, type, quality);
 	};
 
 	window.Palette = Palette;
