@@ -215,17 +215,14 @@ Palette.prototype.gradient = function (settings) {
 	Palette.prototype.text = function (settings) {
 		this.context.save();
 		this.style(settings);
-		if (settings.font){
+		if (settings.font) {
 			this.context.font = settings.font;
 		}
-		if (settings.align){
+		if (settings.align) {
 			this.context.textAlign = settings.align;
 		}
-		if (settings.baseline){
+		if (settings.baseline) {
 			this.context.textBaseline = settings.baseline;
-		}
-		if (settings.measure) {
-			this.context.measureText = settings.measure;
 		}
 		if (settings.stroke) {
 			this.context.strokeText(settings.text, settings.x, settings.y);
