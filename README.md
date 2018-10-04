@@ -22,7 +22,7 @@ Then add a canvas tag on your HTML with a id.
 Finally, use the Palette.js APIs to manipulate your canvas! Remember that you can also chain the APIs!
 
 ```js
-var paper = new Palette('myCanvas');
+var paper = new Palette('#myCanvas');
 
 // draw a text
 paper.text({ text: 'Hello World!', x: 10, y: 30, font: '20px Arial', fill: 'blue' });
@@ -43,4 +43,4 @@ Palette.js is released under MIT License (X11 License). [Read the full license](
 
 ## Credits
 
-Created and maintained by Daniele Veneroni ([@Venerons](http://twitter.com/Venerons)).
+Created and maintained by [Daniele Veneroni](https://venerons.github.io).
