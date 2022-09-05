@@ -1,90 +1,9 @@
-// ┌───────────────────────────────────────────────────────────────────────┐
-// │ Palette.js                                                            │
-// ├───────────────────────────────────────────────────────────────────────┤
-// │ Version 2.0.0 - 04/10/2018                                            │
-// ├───────────────────────────────────────────────────────────────────────┤
-// │ Copyright (c) 2013-2018 Daniele Veneroni (http://venerons.github.io)  │
-// ├───────────────────────────────────────────────────────────────────────┤
-// │ Licensed under the MIT License (X11 License).                         │
-// └───────────────────────────────────────────────────────────────────────┘
-
-/*
-
-// PATH
-
-Palette.prototype.path = function (settings) {
-	this.context.save();
-	this.style(settings);
-	this.context.beginPath();
-
-	// path engine
-
-	this.context.closePath();
-	if (settings.fill) {
-		this.context.fill();
-	}
-	if (settings.stroke) {
-		this.context.stroke();
-	}
-	this.context.restore();
-	return this;
-};
-
-// POLYGON
-
-http://www.arungudelli.com/html5/html5-canvas-polygon/
-
-function regularpolygon(ctx, x, y, radius, sides) {
-	if (sides < 3) return;
-	ctx.beginPath();
-	var a = ((Math.PI * 2)/sides);
-	ctx.translate(x,y);
-	ctx.moveTo(radius,0);
-	for (var i = 1; i < sides; i++) {
-		ctx.lineTo(radius*Math.cos(a*i),radius*Math.sin(a*i));
-	}
-	ctx.closePath();
-	ctx.stroke();
-}
-
-// GRADIENT
-
-'90-#fff-#000'
-
-create and set a linear gradient
-Example:
-paper.gradient({
-	x1: 0,
-	y1: 0,
-	x2: 100,
-	y2: 0,
-	color1: 'blue',
-	color2: 'red'
-});
-
-Palette.prototype.gradient = function (settings) {
-	var gradient = this.context.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
-	gradient.addColorStop(0, settings.color1);
-	gradient.addColorStop(1, settings.color2);
-	this.setColor(gradient);
-	return this;
-};
-
----
-
-.rotate(degrees) --> context.rotate(degrees * Math.PI / 180);
-.scale()  
-.translate()  
-.transform() - see transform() and setTransform() 
-
-*/
-
+// palette.js v3.0.0
+// Copyright (c) 2013 – 2022 Daniele Veneroni. All rights reserved.
+// Licensed under the MIT License (X11 License)
 (function () {
 	'use strict';
 
-	// Example: var paper = new Palette(document.createElement('canvas'));
-	// Example: var paper = new Palette('#myCanvas');
-	// Example: var paper = new Palette('#myCanvas', { alpha: false });
 	function Palette(canvas, settings) {
 		if (canvas instanceof HTMLCanvasElement) {
 			this.canvas = canvas;
@@ -94,149 +13,61 @@ Palette.prototype.gradient = function (settings) {
 		this.context = this.canvas.getContext('2d', settings);
 	}
 
-	// change canvas size (warning: this will clear the canvas!)
 	Palette.prototype.size = function (w, h) {
 		this.canvas.width = w;
 		this.canvas.height = h;
 		return this;
 	};
 
-	// clear a rectangular area
 	Palette.prototype.clear = function (settings) {
+		const ctx = this.context;
 		if (settings) {
-			this.context.clearRect(settings.x, settings.y, settings.width, settings.height);
+			ctx.clearRect(settings.x, settings.y, settings.width, settings.height);
 		} else {
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		}
 		return this;
 	};
 
-	// set the style for future use
 	Palette.prototype.style = function (settings) {
+		const ctx = this.context;
 		if (settings.fill) {
-			this.context.fillStyle = settings.fill;
+			ctx.fillStyle = settings.fill;
 		}
 		if (settings.shadow) {
-			var shadow = settings.shadow.split(' ');
-			this.context.shadowOffsetX = parseInt(shadow[0], 10);
-			this.context.shadowOffsetY = parseInt(shadow[1], 10);
-			this.context.shadowBlur = parseInt(shadow[2], 10);
-			this.context.shadowColor = shadow[3];
+			const shadow = settings.shadow.split(' ');
+			ctx.shadowOffsetX = parseInt(shadow[0], 10);
+			ctx.shadowOffsetY = parseInt(shadow[1], 10);
+			ctx.shadowBlur = parseInt(shadow[2], 10);
+			ctx.shadowColor = shadow[3];
 		}
 		if (settings.stroke) {
-			this.context.strokeStyle = settings.stroke;
+			ctx.strokeStyle = settings.stroke;
 		}
 		if (settings.cap) {
-			this.context.lineCap = settings.cap;
+			ctx.lineCap = settings.cap;
 		}
 		if (settings.join) {
-			this.context.lineJoin = settings.join;
+			ctx.lineJoin = settings.join;
 		}
 		if (settings.thickness) {
-			this.context.lineWidth = settings.thickness;
+			ctx.lineWidth = settings.thickness;
 		}
 		if (settings.miterLimit) {
-			this.context.miterLimit = settings.miterLimit;
+			ctx.miterLimit = settings.miterLimit;
 		}
 		if (settings.alpha) {
-			this.context.globalAlpha = settings.alpha;
+			ctx.globalAlpha = settings.alpha;
 		}
 		if (settings.composite) {
-			this.context.globalCompositeOperation = settings.composite;
+			ctx.globalCompositeOperation = settings.composite;
 		}
 		return this;
 	};
 
-	// paint a line
-	Palette.prototype.line = function (settings) {
-		this.context.save();
-		this.style(settings);
-		this.context.beginPath();
-		this.context.moveTo(settings.x1, settings.y1);
-		this.context.lineTo(settings.x2, settings.y2);
-		this.context.closePath();
-		this.context.stroke();
-		this.context.restore();
-		return this;
-	};
-
-	// paint a rectangle
-	Palette.prototype.rect = function (settings) {
-		this.context.save();
-		this.style(settings);
-		this.context.beginPath();
-		this.context.rect(settings.x, settings.y, settings.width, settings.height);
-		this.context.closePath();
-		if (settings.fill) {
-			this.context.fill();
-		}
-		if (settings.stroke) {
-			this.context.stroke();
-		}
-		this.context.restore();
-		return this;
-	};
-
-	// paint a circle
-	Palette.prototype.circle = function (settings) {
-		this.context.save();
-		this.style(settings);
-		this.context.beginPath();
-		this.context.arc(settings.x, settings.y, settings.r, 0, 2 * Math.PI);
-		this.context.closePath();
-		if (settings.fill) {
-			this.context.fill();
-		}
-		if (settings.stroke) {
-			this.context.stroke();
-		}
-		this.context.restore();
-		return this;
-	};
-
-	// paint an arc
-	Palette.prototype.arc = function (settings) {
-		this.context.save();
-		this.style(settings);
-		this.context.beginPath();
-		this.context.arc(settings.x, settings.y, settings.r, settings.start, settings.stop);
-		this.context.closePath();
-		if (settings.fill) {
-			this.context.fill();
-		}
-		if (settings.stroke) {
-			this.context.stroke();
-		}
-		this.context.restore();
-		return this;
-	};
-
-	// paint a text
-	Palette.prototype.text = function (settings) {
-		this.context.save();
-		this.style(settings);
-		if (settings.font) {
-			this.context.font = settings.font;
-		}
-		if (settings.align) {
-			this.context.textAlign = settings.align;
-		}
-		if (settings.baseline) {
-			this.context.textBaseline = settings.baseline;
-		}
-		if (settings.stroke) {
-			this.context.strokeText(settings.text, settings.x, settings.y);
-		} else {
-			this.context.fillText(settings.text, settings.x, settings.y);
-		}
-		this.context.restore();
-		return this;
-	};
-
-	// paint an image (width and height are optionals)
 	Palette.prototype.image = function (settings) {
-		var ctx = this.context,
-			image = new Image();
+		const ctx = this.context;
+		const image = new Image();
 		image.onload = function() {
 			if (settings.width && settings.height) {
 				ctx.drawImage(image, settings.x, settings.y, settings.width, settings.height);
@@ -248,30 +79,185 @@ Palette.prototype.gradient = function (settings) {
 		return this;
 	};
 
-	// requestAnimationFrame polyfill
-	window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-
-	// start an animation loop
-	Palette.prototype.animation = function (animation, fps) {
-		var palette = this;
-		if (!fps) {
-			animation();
-			requestAnimationFrame(palette.animation(animation));
-		} else {
-			setTimeout(function() {
-				animation();
-				requestAnimationFrame(palette.animation(animation, fps));
-			}, 1000 / fps);
+	Palette.prototype.text = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		if (settings.font) {
+			ctx.font = settings.font;
 		}
+		if (settings.align) {
+			ctx.textAlign = settings.align;
+		}
+		if (settings.baseline) {
+			ctx.textBaseline = settings.baseline;
+		}
+		if (settings.direction) {
+			ctx.direction = settings.direction;
+		}
+		if (settings.stroke) {
+			ctx.strokeText(settings.text, settings.x, settings.y);
+		} else {
+			ctx.fillText(settings.text, settings.x, settings.y);
+		}
+		ctx.restore();
+		return this;
 	};
+
+	Palette.prototype.line = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		ctx.beginPath();
+		ctx.moveTo(settings.x1, settings.y1);
+		ctx.lineTo(settings.x2, settings.y2);
+		ctx.closePath();
+		ctx.stroke();
+		ctx.restore();
+		return this;
+	};
+
+	Palette.prototype.rect = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		const radians = settings.degree !== undefined ? settings.degree * Math.PI / 180 : null;
+		if (radians) {
+			const c_w = settings.x + (settings.width / 2);
+			const c_h = settings.y + (settings.height / 2);
+			ctx.translate(c_w, c_h);
+			ctx.rotate(radians);
+			ctx.translate(-c_w, -c_h);
+		}
+		ctx.beginPath();
+		ctx.rect(settings.x, settings.y, settings.width, settings.height);
+		ctx.closePath();
+		if (radians) {
+			// reset transformation matrix to the identity matrix
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+		}
+		if (settings.fill) {
+			ctx.fill();
+		}
+		if (settings.stroke) {
+			ctx.stroke();
+		}
+		ctx.restore();
+		return this;
+	};
+
+	Palette.prototype.circle = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		ctx.beginPath();
+		ctx.arc(settings.x, settings.y, settings.r, 0, 2 * Math.PI);
+		ctx.closePath();
+		if (settings.fill) {
+			ctx.fill();
+		}
+		if (settings.stroke) {
+			ctx.stroke();
+		}
+		ctx.restore();
+		return this;
+	};
+
+	Palette.prototype.arc = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		ctx.beginPath();
+		ctx.arc(settings.x, settings.y, settings.r, settings.start, settings.stop);
+		ctx.closePath();
+		if (settings.fill) {
+			ctx.fill();
+		}
+		if (settings.stroke) {
+			ctx.stroke();
+		}
+		ctx.restore();
+		return this;
+	};
+
+	Palette.prototype.polygon = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		const radians = settings.degree !== undefined ? settings.degree * Math.PI / 180 : 0;
+		ctx.translate(settings.x, settings.y);
+		ctx.rotate(radians);
+		ctx.beginPath();
+		ctx.moveTo(settings.size * Math.cos(0), settings.size * Math.sin(0));
+		for (let i = 1; i <= settings.sides; ++i) {
+			ctx.lineTo(settings.size * Math.cos(i * 2 * Math.PI / settings.sides), settings.size * Math.sin(i * 2 * Math.PI / settings.sides));
+		}
+		ctx.closePath();
+		// reset transformation matrix to the identity matrix
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		if (settings.fill) {
+			ctx.fill();
+		}
+		if (settings.stroke) {
+			ctx.stroke();
+		}
+		ctx.restore();
+		return this;
+	};
+
+	Palette.prototype.path = function (settings) {
+		const ctx = this.context;
+		ctx.save();
+		this.style(settings);
+		ctx.beginPath();
+		const steps = settings.path.split(' ');
+		steps.forEach(function (step) {
+			const command = step.split(',');
+			if (command[0] === 'm' || command[0] === 'M') {
+				ctx.moveTo(command[1], command[2]);
+			} else if (command[0] === 'l' || command[0] === 'L') {
+				ctx.lineTo(command[1], command[2]);
+			}
+		});
+		ctx.closePath();
+		if (settings.fill) {
+			ctx.fill();
+		}
+		if (settings.stroke) {
+			ctx.stroke();
+		}
+		ctx.restore();
+		return this;
+	};
+
+	/*
+	create and set a linear gradient
+	Example:
+	paper.gradient({
+		x1: 0,
+		y1: 0,
+		x2: 100,
+		y2: 0,
+		color1: 'blue',
+		color2: 'red'
+	});
+
+	Palette.prototype.gradient = function (settings) {
+		var gradient = this.context.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
+		gradient.addColorStop(0, settings.color1);
+		gradient.addColorStop(1, settings.color2);
+		this.setColor(gradient);
+		return this;
+	};
+	*/
 
 	// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
 	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
 	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
 	Palette.prototype.toDataURL = function (settings) {
 		settings = settings || {};
-		var type = settings.type || 'image/png',
-			quality = settings.quality || 1.0;
+		const type = settings.type || 'image/png';
+		const quality = settings.quality || 1.0;
 		return this.canvas.toDataURL(type, quality);
 	};
 
@@ -280,8 +266,8 @@ Palette.prototype.gradient = function (settings) {
 	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
 	Palette.prototype.toBlob = function (settings, callback) {
 		settings = settings || {};
-		var type = settings.type || 'image/png',
-			quality = settings.quality || 1.0;
+		const type = settings.type || 'image/png';
+		const quality = settings.quality || 1.0;
 		return this.canvas.toBlob(callback, type, quality);
 	};
 
