@@ -1,45 +1,42 @@
-# Palette.js
+# palette.js
 
-_Copyright (c) 2013-2018 Daniele Veneroni._  
-_Released under MIT License (X11 License). See [LICENSE.md](LICENSE.md) for further information._
-
-Palette.js is a new full-standard HTML5 Canvas framework. With Palette.js you can easily create canvas graphics and animation in seconds!
+Palette.js is a framework to make drawing a canvas easy, providing all the features available from vanilla JavaScript, but without the complexity and verbosity of it.
 
 ## Usage
 
-Just add the script to your HTML page to import Palette.js
+Add the script to your page:
 
 ```html
-<script src="js/palette.min.js"></script>
+<script src="palette.min.js"></script>
 ```
 
-Then add a canvas tag on your HTML with a id.
+Add a canvas:
 
 ```html
-<canvas id="myCanvas"></canvas>
+<canvas id="my_canvas"></canvas>
 ```
 
-Finally, use the Palette.js APIs to manipulate your canvas! Remember that you can also chain the APIs!
+Finally, use the Palette.js APIs to manipulate your canvas. Remember that you can also chain the APIs.
 
 ```js
-var paper = new Palette('#myCanvas');
+const paper = new Palette('#my_canvas');
 
 // draw a text
-paper.text({ text: 'Hello World!', x: 10, y: 30, font: '20px Arial', fill: 'blue' });
+paper.text({ text: 'Hello World!', x: 10, y: 30, font: '20px Arial', fill: 'black' });
 
 // draw a circle
-paper.circle({ x: 50, y: 30, r: 10, fill: 'red' });
+paper.circle({ x: 50, y: 30, r: 10, fill: 'black' });
 
-// draw a image
+// draw an image
 paper.image({ src: 'path/to/image.png', x: 10, y: 100 });
 
-// create an image from the canvas
-var dataURL = paper.toDataURL();
+// draw a custom path
+paper.path({ path: 'M,10,10 L,20,20 M,10,20 L,20,10', stroke: 'black' });
 ```
 
 ## Licensing
 
-Palette.js is released under MIT License (X11 License). [Read the full license](LICENSE.md). 
+palette.js is released under MIT License (X11 License). [Read the full license](LICENSE.md). 
 
 ## Credits
 
