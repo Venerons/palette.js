@@ -1,1 +1,12 @@
-*.DS_Store
+# generic
+.vscode
+*.bak
+*~
+.DS_Store
+Thumbs.db
+
+# git files
+*.orig
+*.patch
+*.rej
+*.lock
