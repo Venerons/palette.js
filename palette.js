@@ -242,15 +242,6 @@
 		return this;
 	};
 
-	/*
-	const gradient = paper.conic_gradient({
-		degree: 0,
-		x: 50,
-		y: 50,
-		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
-	});
-	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
-	*/
 	Palette.prototype.conic_gradient = function (settings) {
 		const ctx = this.context;
 		const gradient = ctx.createConicGradient(settings.degree * Math.PI / 180, settings.x, settings.y);
@@ -261,16 +252,6 @@
 		return gradient;
 	};
 
-	/*
-	const gradient = paper.linear_gradient({
-		x1: 0,
-		y1: 0,
-		x2: 100,
-		y2: 0,
-		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
-	});
-	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
-	*/
 	Palette.prototype.linear_gradient = function (settings) {
 		const ctx = this.context;
 		const gradient = ctx.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
@@ -281,18 +262,6 @@
 		return gradient;
 	};
 
-	/*
-	const gradient = paper.radial_gradient({
-		x1: 50,
-		y1: 50,
-		r1: 0,
-		x2: 50,
-		y2: 50,
-		r2: 50,
-		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
-	});
-	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
-	*/
 	Palette.prototype.radial_gradient = function (settings) {
 		const ctx = this.context;
 		const gradient = ctx.createRadialGradient(settings.x1, settings.y1, settings.r1, settings.x2, settings.y2, settings.r2);
@@ -303,9 +272,6 @@
 		return gradient;
 	};
 
-	// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
-	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
-	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
 	Palette.prototype.toDataURL = function (settings) {
 		settings = settings || {};
 		const type = settings.type || 'image/png';
@@ -313,9 +279,6 @@
 		return this.canvas.toDataURL(type, quality);
 	};
 
-	// export the canvas as a blob image. You must pass a callback function, because this method is a void.
-	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
-	// quality is applied only if type is jpeg or webp, and must be between 0.0 and 1.0
 	Palette.prototype.toBlob = function (settings, callback) {
 		settings = settings || {};
 		const type = settings.type || 'image/png';
