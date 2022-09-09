@@ -34,6 +34,8 @@ paper.image({ src: 'path/to/image.png', x: 10, y: 100 });
 paper.path({ path: 'M,10,10 L,20,20 M,10,20 L,20,10', stroke: 'black' });
 ```
 
+[Read the full documentation](docs.md). 
+
 ## Licensing
 
 palette.js is released under MIT License (X11 License). [Read the full license](LICENSE.md). 
