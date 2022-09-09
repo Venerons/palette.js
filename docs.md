@@ -1,6 +1,6 @@
 # Quick Start
 
-To start using Palette.js you just need to create a Palette instance passing as argument a CSS selector of your canvas, or a canvas element. An optional second argument can be used to disable the alpha channel of the canvas, useful to improve performance if you don't need it.
+To start using palette.js you just need to create a Palette instance passing as argument a CSS selector of your canvas, or a canvas element. An optional second argument can be used to disable the alpha channel of the canvas, useful to improve performance if you don't need it.
 
 ```js
 const paper = new Palette('#mycanvas');
@@ -12,14 +12,29 @@ const paper = new Palette(document.createElement('canvas'));
 const paper = new Palette('#mycanvas', { alpha: false });
 ```
 
+After you created an instance of Palette, you can start manipulating the canvas and drawing on it. Note that if you ever need direct access to the canvas element you can access it via `paper.canvas`, and if you ever need direct access to the drawing context you can access it via `paper.context`.
+
+Following a complete example of getting a canvas, setting it fullscreen, drawing a white background and finally drawing a black circle in the middle.
+
+```js
+const paper = new Palette('#canvas', { alpha: false });
+paper.size(window.innerWidth, window.innerHeight);
+paper.clear();
+paper.rect({ x: 0, y: 0, width: paper.width, height: paper.height, fill: 'white' });
+paper.circle({ x: paper.width / 2, y: paper.height / 2, r: 100, fill: 'black' });
+```
+
 # Reference
 
 ## .size()
 
-Resize the canvas. Please note that resizing the canvas will clear all content.
+Resize the canvas. Please note that resizing the canvas will clear all content. Also, it will adapt the canvas for best rendering on retina/hi-dpi display, so the final real size of the canvas might differ from the one on input, even if then is correctly resized on the page. The values useful for drawing (that are equal to the input values) are stored in `paper.width` and `paper.height`.
 
 ```js
 paper.size(480, 320);
+```
+```js
+paper.size(window.innerWidth, window.innerHeight);
 ```
 
 ## .clear()
@@ -185,10 +200,62 @@ degree | (Optional) Rotation in degree.
 
 Draw a path. The path can be filled, stroked or both as you like.
 
-The path is a set of instructions separated by ` ` (space). Each instruction is a set of 3 values `[M|L],[position_x],[position_y]`, where `M = move to point` and `L = line to point`.
+The path is a set of instructions separated by ` ` (space). Each instruction is a set of values depending on the action:
+
+Syntax | Description
+--- | ---
+`M,x,y` | Move to point at x,y
+`L,x,y` | Draw line from current position to point at x,y
+`Q,cpx,cpy,x,y` | Draw line from current position using control point at cpx,cpy and end point x,y
 
 ```js
 paper.path({ path: 'M,10,10 L,20,20 M,10,20 L,20,10', stroke: 'black' });
+```
+
+## .conic_gradient()
+
+Returns a conic gradient for later use.
+
+```js
+const gradient = paper.conic_gradient({
+	degree: 0,
+	x: 50,
+	y: 50,
+	stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
+});
+paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient })
+```
+
+## .linear_gradient()
+
+Returns a linear gradient for later use.
+
+```js
+const gradient = paper.linear_gradient({
+	x1: 0,
+	y1: 0,
+	x2: 100,
+	y2: 0,
+	stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
+});
+paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient })
+```
+
+## .radial_gradient()
+
+Returns a radial gradient for later use.
+
+```js
+const gradient = paper.radial_gradient({
+	x1: 50,
+	y1: 50,
+	r1: 0,
+	x2: 50,
+	y2: 50,
+	r2: 50,
+	stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
+});
+paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient })
 ```
 
 ## .toDataURL()
