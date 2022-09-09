@@ -266,6 +266,7 @@ Export the canvas as a data URL string.
 const data = paper.toDataURL();
 const data = paper.toDataURL({ type: 'image/png' });
 const data = paper.toDataURL({ type: 'image/jpeg', quality: 0.5 });
+const data = paper.toDataURL({ type: 'image/webp', quality: 0.5 });
 ```
 
 ## .toBlob()
@@ -277,6 +278,9 @@ paper.toBlob({ type: 'image/png' }, function (blob) {
 	console.log('Done.');
 });
 paper.toBlob({ type: 'image/jpeg', quality: 0.5 }, function (blob) {
+	console.log('Done.');
+});
+paper.toBlob({ type: 'image/webp', quality: 0.5 }, function (blob) {
 	console.log('Done.');
 });
 ```
