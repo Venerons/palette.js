@@ -1,4 +1,4 @@
-// palette.js v3.0.0
+// palette.js v3.1.0
 // Copyright (c) 2013 – 2022 Daniele Veneroni. All rights reserved.
 // Licensed under the MIT License (X11 License)
 (function () {
@@ -11,11 +11,27 @@
 			this.canvas = document.querySelector(canvas);
 		}
 		this.context = this.canvas.getContext('2d', settings);
+		this.width = this.canvas.width;
+		this.height = this.canvas.height;
 	}
 
 	Palette.prototype.size = function (w, h) {
-		this.canvas.width = w;
-		this.canvas.height = h;
+		this.width = w;
+		this.height = h;
+		const canvas = this.canvas;
+		const ctx = this.context;
+		const pixel_ratio = window.devicePixelRatio;
+		if (pixel_ratio > 1) {
+			canvas.style.width = w + 'px';
+			canvas.style.height = h + 'px';
+			canvas.width = w * pixel_ratio;
+			canvas.height = h * pixel_ratio;
+			//ctx.scale(pixel_ratio, pixel_ratio);
+			ctx.setTransform(pixel_ratio, 0, 0, pixel_ratio, 0, 0);
+		} else {
+			canvas.width = w;
+			canvas.height = h;
+		}
 		return this;
 	};
 
@@ -132,10 +148,6 @@
 		ctx.beginPath();
 		ctx.rect(settings.x, settings.y, settings.width, settings.height);
 		ctx.closePath();
-		if (radians) {
-			// reset transformation matrix to the identity matrix
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
-		}
 		if (settings.fill) {
 			ctx.fill();
 		}
@@ -193,8 +205,6 @@
 			ctx.lineTo(settings.size * Math.cos(i * 2 * Math.PI / settings.sides), settings.size * Math.sin(i * 2 * Math.PI / settings.sides));
 		}
 		ctx.closePath();
-		// reset transformation matrix to the identity matrix
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		if (settings.fill) {
 			ctx.fill();
 		}
@@ -217,6 +227,8 @@
 				ctx.moveTo(command[1], command[2]);
 			} else if (command[0] === 'l' || command[0] === 'L') {
 				ctx.lineTo(command[1], command[2]);
+			} else if (command[0] === 'q' || command[0] === 'Q') {
+				ctx.quadraticCurveTo(command[1], command[2], command[3], command[4]);
 			}
 		});
 		ctx.closePath();
@@ -231,25 +243,65 @@
 	};
 
 	/*
-	create and set a linear gradient
-	Example:
-	paper.gradient({
+	const gradient = paper.conic_gradient({
+		degree: 0,
+		x: 50,
+		y: 50,
+		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
+	});
+	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
+	*/
+	Palette.prototype.conic_gradient = function (settings) {
+		const ctx = this.context;
+		const gradient = ctx.createConicGradient(settings.degree * Math.PI / 180, settings.x, settings.y);
+		settings.stops.split(' ').forEach(function (item) {
+			const tokens = item.split(',');
+			gradient.addColorStop(parseFloat(tokens[0]), tokens[1]);
+		});
+		return gradient;
+	};
+
+	/*
+	const gradient = paper.linear_gradient({
 		x1: 0,
 		y1: 0,
 		x2: 100,
 		y2: 0,
-		color1: 'blue',
-		color2: 'red'
+		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
 	});
-
-	Palette.prototype.gradient = function (settings) {
-		var gradient = this.context.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
-		gradient.addColorStop(0, settings.color1);
-		gradient.addColorStop(1, settings.color2);
-		this.setColor(gradient);
-		return this;
-	};
+	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
 	*/
+	Palette.prototype.linear_gradient = function (settings) {
+		const ctx = this.context;
+		const gradient = ctx.createLinearGradient(settings.x1, settings.y1, settings.x2, settings.y2);
+		settings.stops.split(' ').forEach(function (item) {
+			const tokens = item.split(',');
+			gradient.addColorStop(parseFloat(tokens[0]), tokens[1]);
+		});
+		return gradient;
+	};
+
+	/*
+	const gradient = paper.radial_gradient({
+		x1: 50,
+		y1: 50,
+		r1: 0,
+		x2: 50,
+		y2: 50,
+		r2: 50,
+		stops: '0,red 0.25,orange 0.5,yellow 0.75,green 1,blue'
+	});
+	paper.rect({ x: 0, y: 0, width: 100, height: 100, fill: gradient });
+	*/
+	Palette.prototype.radial_gradient = function (settings) {
+		const ctx = this.context;
+		const gradient = ctx.createRadialGradient(settings.x1, settings.y1, settings.r1, settings.x2, settings.y2, settings.r2);
+		settings.stops.split(' ').forEach(function (item) {
+			const tokens = item.split(',');
+			gradient.addColorStop(parseFloat(tokens[0]), tokens[1]);
+		});
+		return gradient;
+	};
 
 	// export the canvas as a DataURL image, returning a string with the DataURL image. Both arguments are optional.
 	// Supported type: 'image/png', 'image/jpeg', 'image/webp'
