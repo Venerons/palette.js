@@ -12,6 +12,8 @@ Add the script to your page:
 
 You can also use jsDelivr as CDN if you prefer:
 
+[![](https://data.jsdelivr.com/v1/package/gh/Venerons/palette.js/badge)](https://www.jsdelivr.com/package/gh/Venerons/palette.js)
+
 ```html
 <!-- latest relase -->
 <script src="https://cdn.jsdelivr.net/gh/Venerons/palette.js/palette.min.js"></script>
