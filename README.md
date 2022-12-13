@@ -10,6 +10,16 @@ Add the script to your page:
 <script src="palette.min.js"></script>
 ```
 
+You can also use jsDelivr as CDN if you prefer:
+
+```html
+<!-- latest relase -->
+<script src="https://cdn.jsdelivr.net/gh/Venerons/palette.js/palette.min.js"></script>
+
+<!-- tagged relase -->
+<script src="https://cdn.jsdelivr.net/gh/Venerons/palette.js@3.1.0/palette.min.js"></script>
+```
+
 Add a canvas:
 
 ```html
