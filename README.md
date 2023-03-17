@@ -3,7 +3,7 @@
 ![](https://img.shields.io/github/license/Venerons/palette.js?style=for-the-badge)
 ![](https://img.shields.io/github/v/release/Venerons/palette.js?style=for-the-badge)
 ![](https://img.shields.io/github/issues/Venerons/palette.js?style=for-the-badge)
-![](https://img.shields.io/github/size/Venerons/palette.js/palette.min.js?style=for-the-badge)
+![](https://img.shields.io/github/size/Venerons/palette.js/palette.min.js?label=minified%20size&style=for-the-badge)
 
 Palette.js is a framework to make drawing a canvas easy, providing all the features available from vanilla JavaScript, but without the complexity and verbosity of it.
 
